@@ -1,3 +1,14 @@
+/**
+ * register user
+ * login user
+ * logout user
+ * updatedUser
+ * deleteUser
+ * changePassword
+ * resetPassword
+ * findUserName
+ */
+
 import { cookieExpire, cookieOptions } from "../constants.js";
 import User from "../models/user.models.js";
 import AsyncHandler from "../utils/asyncHandler.js";
@@ -620,20 +631,11 @@ export const changePassword = AsyncHandler(async (req, res) => {
 });
 
 export const resetPassword = AsyncHandler(async (req, res) => {
-  // Check the userId from the request parameters.
-  // Retrieve the user.
   // Validate received data.
+  // Retrieve the user by userName.
   // Match the data to the user.
   // Reset the password.
   // If the user is logged in, log them out and redirect to the login page.
-
-  // If userId is not received
-  if (!req.params?.userId) {
-    return res
-      .status(404)
-      .cookie("errorMessage", "DataError : UserId not received", cookieExpire)
-      .redirect("/resetPassword");
-  }
 
   // If request body is empty
   if (!req.body) {
@@ -689,9 +691,75 @@ export const resetPassword = AsyncHandler(async (req, res) => {
       .cookie("errorMessage", "DBError : Unable to reset password", cookieExpire)
       .redirect("/resetPassword");
   }
-
+  // if user login and cookie available, so clear cookie 
+  if(req.cookie["accessToken"]){
+    res.clearCookie("accessToken", cookieOptions)
+  }
   return res
     .status(200)
     .cookie("successMessage", "Password changed successfully", cookieExpire)
+    .redirect("/login");
+});
+
+export const findUserName = AsyncHandler(async (req, res) => {
+  // Check the data receive and validate.
+  // Validate received data.
+  // Retrieve the user by given email.
+  // Match the data to the user.
+  // return userName in successMessage and redirect to login
+
+  // If request body is empty
+  if (!req.body) {
+    return res
+      .status(404)
+      .cookie("errorMessage", "DataError : Data not received", cookieExpire)
+      .redirect("/findUserName");
+  }
+
+  const { emailId, fullName } = req.body;
+
+  // If any required field is empty
+  if (
+    [emailId, fullName].some(
+      (field) => field.toString().trim() === ""
+    )
+  ) {
+    return res
+      .status(400)
+      .cookie("errorMessage", "DataError : Field is required", cookieExpire)
+      .redirect("/findUserName");
+  }
+
+  let searchUser;
+  try {
+    // Find the user by EmailId and exclude the password field
+    searchUser = await User.findOne({ emailId }).select("-password");
+  } catch (error) {
+    return res
+      .status(500)
+      .cookie(
+        "errorMessage",
+        error.message || "DBError : Unable to find user",
+        cookieExpire
+      )
+      .redirect("/findUserName");
+  }
+  if(!searchUser){
+    return res
+      .status(404)
+      .cookie("errorMessage", "UserError : User Not found", cookieExpire)
+      .redirect("/findUserName");
+  }
+
+  if (!(searchUser.fullName === fullName)) {
+    return res
+      .status(400)
+      .cookie("errorMessage", "UserError : Incorrect User data", cookieExpire)
+      .redirect("/findUserName");
+  }
+
+  return res
+    .status(200)
+    .cookie("successMessage", `User Found : UserName : ${searchUser.userName}`, cookieExpire)
     .redirect("/login");
 });

@@ -12,4 +12,13 @@ app.set("view engine", "ejs")
 app.set("views", "./views")
 
 
+// All routes
+import userRouter from "./routes/user.routes.js"
+import userUtilsRouter from "./routes/userUtils.routes.js"
+import todoUtilsRouter from "./routes/todoUtils.routes.js"
+
+app.use("/user", userRouter)
+app.use("/api/users", userUtilsRouter)
+app.use("/api/todos", todoUtilsRouter)
+
 export default app
