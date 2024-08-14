@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon -r dotenv/config index"
+    "test": "nodemon -r dotenv/config src/index.js"
   },
+  "type": "module",
   "keywords": [
     "todo",
     "express",

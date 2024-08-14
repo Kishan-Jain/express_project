@@ -14,12 +14,14 @@ const Db_URI = process.env.DB_URI
 const Db_Name = process.env.Db_Name
 
 
-ConnectDataBase(Db_URI, Db_Name)
-.then(
-  app.listen(port, () => {
-    console.log(`server is listning on http://localhost:${part}`)
-  })
-)
-.catch(error => {
-  console.log("DB-SERVER connection failed") 
-})
+try {
+  ConnectDataBase(Db_URI, Db_Name)
+  .then(
+    app.listen(port, () => {
+      console.log(`server is listning on http://localhost:${port}`)
+    })
+  )
+  
+} catch{(error) => 
+  console.log(`DB-SERVER connection failed : ${error.message}`) 
+}

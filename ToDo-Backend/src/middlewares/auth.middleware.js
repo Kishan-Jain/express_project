@@ -3,11 +3,10 @@
  * second check (isLogin) : user login or not : for make all user ulitilities thats important to user login
  */
 
-import AsyncHandler from "../utils/asyncHandler.js"
 import {cookieExpire, cookieOptions} from "../constants.js"
 import jwt from "jsonwebtoken"
 
-export const ifAlReadyLogin = AsyncHandler( async(req, res, next) => {
+export const ifAlReadyLogin = async(req, res, next) => {
   // check 1: accessToken cookie received : redirect to profile
   // if accessToken not received -> means : user not login, directlly pass to next controller
   if(req.cookie["accessToken"]){
@@ -17,9 +16,9 @@ export const ifAlReadyLogin = AsyncHandler( async(req, res, next) => {
     .redirect("/profile")
   }
   next()
-})
+}
 
-export const isLogin = AsyncHandler( async(req, res, next) => {
+export const isLogin = async(req, res, next) => {
   // check 1 : if accessToken cookie not received : redirect to login
   // if accessToken recevied : 
   /**
@@ -48,4 +47,4 @@ export const isLogin = AsyncHandler( async(req, res, next) => {
   }
   req.userId = decodeToken._id
   return next()
-})
+}
