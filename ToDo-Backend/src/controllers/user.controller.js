@@ -23,11 +23,11 @@ export const registerUser = AsyncHandler(async (req, res) => {
   // Redirect with a success message.
 
   // Check if the user is already logged in.
-  if (req.cookie["accessToken"]) {
+  if (req.cookies?.accessToken) {
     return res
       .status(409)
       .cookie("errorMessage", "LoginError : User already logged in", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // Validate received data.
@@ -35,7 +35,7 @@ export const registerUser = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Data not received", cookieExpire)
-      .redirect("/register");
+      .redirect("/user/register");
   }
   const { userName, emailId, fullName, password, gender } = req.body;
 
@@ -48,7 +48,7 @@ export const registerUser = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : All fields are required", cookieExpire)
-      .redirect("/register");
+      .redirect("/user/register");
   }
 
   // check if fields are invalid
@@ -56,7 +56,7 @@ export const registerUser = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Invalid fields", cookieExpire)
-      .redirect("/register");
+      .redirect("/user/register");
   }
 
   // Check if the username is already taken.
@@ -64,7 +64,7 @@ export const registerUser = AsyncHandler(async (req, res) => {
     return res
       .status(409)
       .cookie("errorMessage", "UserError : Username already exists", cookieExpire)
-      .redirect("/register");
+      .redirect("/user/register");
   }
 
   // Check if the email is already taken.
@@ -72,7 +72,7 @@ export const registerUser = AsyncHandler(async (req, res) => {
     return res
       .status(409)
       .cookie("errorMessage", "UserError : Email already exists", cookieExpire)
-      .redirect("/register");
+      .redirect("/user/register");
   }
 
   let newUser;
@@ -85,17 +85,17 @@ export const registerUser = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to create user",
+        `${error.code} : ${error.message}` || "DBError : Unable to create user",
         cookieExpire
       )
-      .redirect("/register");
+      .redirect("/user/register");
   }
 
   if (!newUser) {
     return res
       .status(500)
       .cookie("errorMessage", "DBError : User not created", cookieExpire)
-      .redirect("/register");
+      .redirect("/user/register");
   }
 
   let searchNewUser;
@@ -107,24 +107,24 @@ export const registerUser = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to find user",
+        `${error.code} : ${error.message}` || "DBError : Unable to find user",
         cookieExpire
       )
-      .redirect("/register");
+      .redirect("/user/register");
   }
 
   if (!searchNewUser) {
     return res
       .status(500)
       .cookie("errorMessage", "DBError : User not found", cookieExpire)
-      .redirect("/register");
+      .redirect("/user/register");
   }
 
   // Redirect with a success message.
   return res
     .status(201)
     .cookie("successMessage", "User created successfully", cookieExpire)
-    .render("userUtils/register.ejs", { userData: searchNewUser });
+    .redirect("/user/login")
 });
 
 export const loginUser = AsyncHandler(async (req, res) => {
@@ -137,11 +137,11 @@ export const loginUser = AsyncHandler(async (req, res) => {
   // Set the access token in a cookie and redirect to the user's profile page with a welcome message.
 
   // Check if the user is already logged in.
-  if (req.cookie["accessToken"]) {
+  if (req.cookie?.accessToken) {
     return res
       .status(409)
       .cookie("errorMessage", "LoginError : User already logged in", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // Validate received data.
@@ -149,7 +149,7 @@ export const loginUser = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Data not received", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Extract data from the request body.
@@ -160,7 +160,7 @@ export const loginUser = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : All fields are required", cookieExpire)
-      .redirect("/register");
+      .redirect("/user/register");
   }
 
   // Check if the username is valid.
@@ -168,22 +168,22 @@ export const loginUser = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Invalid field", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Find the user by username.
   let searchUser;
   try {
-    searchUser = await User.findOne({ userName }).select("-password");
+    searchUser = await User.findOne({ userName });
   } catch (error) {
     return res
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to find user",
+        `${error.code} : ${`${error.code} : ${error.message}`}` || "DBError : Unable to find user",
         cookieExpire
       )
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Check if the user exists.
@@ -191,7 +191,7 @@ export const loginUser = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DBError : User does not exist", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Verify the password.
@@ -199,7 +199,7 @@ export const loginUser = AsyncHandler(async (req, res) => {
     return res
       .status(500)
       .cookie("errorMessage", "DBError : Incorrect password", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Generate an access token.
@@ -211,17 +211,17 @@ export const loginUser = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "ServerError : Unable to generate access token",
+        `ServerError : ${error.message}` || "ServerError : Unable to generate access token",
         cookieExpire
       )
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   if (!accessToken) {
     return res
       .status(500)
       .cookie("errorMessage", "ServerError : Access token not generated", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Update the last login timestamp.
@@ -236,25 +236,25 @@ export const loginUser = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to update user",
+        `DBError : ${error.message}` || "DBError : Unable to update user",
         cookieExpire
       )
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   if (!searchUser) {
     return res
       .status(500)
       .cookie("errorMessage", "DBError : User not updated", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
-  // Return a success response.
+  // Return a success response and redirect to profile.
   return res
     .status(200)
     .cookie("successMessage", `welcome, ${searchUser.fullName}`, cookieExpire)
     .cookie("accessToken", accessToken, cookieOptions)
-    .render("user/profile.ejs", { userData: searchUser });
+    .redirect("/user/profile")
 });
 
 export const logoutUser = AsyncHandler(async (req, res) => {
@@ -269,7 +269,7 @@ export const logoutUser = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "LoginError : User not logged in", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // varify logged user and user that logout is same
@@ -278,7 +278,7 @@ export const logoutUser = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "UserError : Unautherize access", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Find the user by ID.
@@ -290,10 +290,10 @@ export const logoutUser = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to find user",
+        `${error.code} : ${error.message}` || "DBError : Unable to find user",
         cookieExpire
       )
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   if (!searchUser) {
@@ -301,7 +301,7 @@ export const logoutUser = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "UserError : User not found", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Update the last logout timestamp.
@@ -313,17 +313,17 @@ export const logoutUser = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to update user",
+        `${error.code} : ${error.message}` || "DBError : Unable to update user",
         cookieExpire
       )
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // Clear the access token cookie and set a success message.
   return res
     .clearCookie("accessToken", cookieOptions)
     .cookie("successMessage", "User logged out successfully", cookieExpire)
-    .redirect("/login");
+    .redirect("/user/login");
 });
 
 export const updatedUser = AsyncHandler(async (req, res) => {
@@ -340,7 +340,7 @@ export const updatedUser = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "LoginError : User not logged in", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // varify logged user and user that update data is same
@@ -349,7 +349,7 @@ export const updatedUser = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "UserError : Unautherize access", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Ensure data is received in the request body.
@@ -357,19 +357,19 @@ export const updatedUser = AsyncHandler(async (req, res) => {
     return res
       .status(400)
       .cookie("errorMessage", "DataError : Data not received", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
-  const { emailId, fullName, gender } = req.body;
+  const {fullName, gender } = req.body;
 
   // Validate that required fields are not empty.
   if (
-    [emailId, fullName, gender].some((field) => field.toString().trim() === "")
+    [fullName, gender].some((field) => field?.toString().trim() === "")
   ) {
     return res
       .status(400)
       .cookie("errorMessage", "DataError : All fields required", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // Find the user by ID.
@@ -381,10 +381,10 @@ export const updatedUser = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to find user",
+        `${error.code} : ${error.message}` || "DBError : Unable to find user",
         cookieExpire
       )
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // If user not found, return an error.
@@ -393,7 +393,7 @@ export const updatedUser = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "UserError : User not found", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Update user details.
@@ -403,7 +403,6 @@ export const updatedUser = AsyncHandler(async (req, res) => {
       searchUser._id,
       {
         $set: {
-          emailId,
           fullName,
           gender,
         },
@@ -415,10 +414,10 @@ export const updatedUser = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to update user",
+        `${error.code} : ${error.message}` || "DBError : Unable to update user",
         cookieExpire
       )
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // If user update fails, return an error.
@@ -427,7 +426,7 @@ export const updatedUser = AsyncHandler(async (req, res) => {
       .status(500)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "DBError : User updation failed", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Generate a new access token for the updated user.
@@ -439,10 +438,10 @@ export const updatedUser = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "ServerError : Unable to regenerate Access token",
+        `${error.code} : ${error.message}` || "ServerError : Unable to regenerate Access token",
         cookieExpire
       )
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // If token generation fails, return an error.
@@ -451,7 +450,7 @@ export const updatedUser = AsyncHandler(async (req, res) => {
       .status(500)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "ServerError : Access token regeneration failed", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Clear existing accessToken cookie and set a new one.
@@ -460,7 +459,7 @@ export const updatedUser = AsyncHandler(async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, cookieOptions)
     .cookie("successMessage", "User details updated successfully", cookieExpire)
-    .render("userUtils/profile.ejs", { userData: updatedUser });
+    .redirect("/user/profile")
 });
 
 export const deleteUser = AsyncHandler(async (req, res) => {
@@ -475,7 +474,7 @@ export const deleteUser = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "LoginError : User not logged in", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // varify logged user and user that delete is same
@@ -484,7 +483,7 @@ export const deleteUser = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "UserError : Unautherize access", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
   // Find the user by ID.
   let searchUser;
@@ -495,10 +494,10 @@ export const deleteUser = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to find user",
+        `${error.code} : ${error.message}` || "DBError : Unable to find user",
         cookieExpire
       )
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // If user not found, return an error.
@@ -506,7 +505,7 @@ export const deleteUser = AsyncHandler(async (req, res) => {
     return res
       .status(400)
       .cookie("errorMessage", "UserError : User not found", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // Delete the user.
@@ -517,10 +516,10 @@ export const deleteUser = AsyncHandler(async (req, res) => {
       .status(400)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to delete user",
+        `${error.code} : ${error.message}` || "DBError : Unable to delete user",
         cookieExpire
       )
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // Clear existing accessToken cookie and set a success message.
@@ -528,7 +527,7 @@ export const deleteUser = AsyncHandler(async (req, res) => {
     .status(200)
     .clearCookie("accessToken", cookieOptions)
     .cookie("successMessage", "User deleted successfully", cookieExpire)
-    .redirect("/login");
+    .redirect("/user/login");
 });
 
 export const changePassword = AsyncHandler(async (req, res) => {
@@ -546,7 +545,7 @@ export const changePassword = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "LoginError : User not logged in", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Ensure data is received in the request body.
@@ -554,19 +553,19 @@ export const changePassword = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Data not received", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
-  const { newPassword, OldPassword } = req.body;
+  const { newPassword, oldPassword } = req.body;
 
   // Validate that required fields are not empty.
   if (
-    [newPassword, OldPassword].some((field) => field.toString().trim() === "")
+    [newPassword, oldPassword].some((field) => field?.toString().trim() === "")
   ) {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Password not received", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // varify logged user and user that change password is same
@@ -575,22 +574,22 @@ export const changePassword = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "UserError : Unautherize access", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Find the user by ID.
   let searchUser;
   try {
-    searchUser = await User.findById(req.params?.userId).select("-password");
+    searchUser = await User.findById(req.params?.userId);
   } catch (error) {
     return res
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to find user",
+        `${error.code} : ${error.message}` || "DBError : Unable to find user",
         cookieExpire
       )
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // If user not found, return an error.
@@ -599,16 +598,16 @@ export const changePassword = AsyncHandler(async (req, res) => {
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "UserError : User not found", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Validate the old password.
-  if (!(await searchUser.isPasswordCorrect(OldPassword))) {
+  if (!(await searchUser.isPasswordCorrect(oldPassword))) {
     return res
       .status(400)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "UserError : Incorrect password", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Update the user's password.
@@ -618,8 +617,8 @@ export const changePassword = AsyncHandler(async (req, res) => {
   } catch (error) {
     return res
       .status(500)
-      .cookie("errorMessage", error.message || "DBError : Unable to change password", cookieExpire)
-      .redirect("/profile");
+      .cookie("errorMessage", `${error.code} : ${error.message}` || "DBError : Unable to change password", cookieExpire)
+      .redirect("/user/profile");
   }
 
   // Clear existing accessToken cookie and set a success message.
@@ -627,7 +626,7 @@ export const changePassword = AsyncHandler(async (req, res) => {
     .status(200)
     .clearCookie("accessToken", cookieOptions)
     .cookie("successMessage", "Password changed successfully", cookieExpire)
-    .redirect("/login");
+    .redirect("/user/login");
 });
 
 export const resetPassword = AsyncHandler(async (req, res) => {
@@ -642,7 +641,7 @@ export const resetPassword = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Data not received", cookieExpire)
-      .redirect("/resetPassword");
+      .redirect("/user/resetUserPassword");
   }
 
   const { userName, emailId, fullName, newPassword } = req.body;
@@ -656,7 +655,7 @@ export const resetPassword = AsyncHandler(async (req, res) => {
     return res
       .status(400)
       .cookie("errorMessage", "DataError : Data not received", cookieExpire)
-      .redirect("/resetPassword");
+      .redirect("/user/resetUserPassword");
   }
 
   let searchUser;
@@ -668,17 +667,17 @@ export const resetPassword = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to find user",
+        `${error.code} : ${error.message}` || "DBError : Unable to find user",
         cookieExpire
       )
-      .redirect("/resetPassword");
+      .redirect("/user/resetUserPassword");
   }
 
-  if (!(searchUser.emailId === emailId && searchUser.fullName === fullName)) {
+  if (!(searchUser?.emailId === emailId && searchUser?.fullName === fullName)) {
     return res
       .status(400)
       .cookie("errorMessage", "UserError : Incorrect User data", cookieExpire)
-      .redirect("/resetPassword");
+      .redirect("/user/resetUserPassword");
   }
 
   try {
@@ -689,16 +688,16 @@ export const resetPassword = AsyncHandler(async (req, res) => {
     return res
       .status(500)
       .cookie("errorMessage", "DBError : Unable to reset password", cookieExpire)
-      .redirect("/resetPassword");
+      .redirect("/user/resetUserPassword");
   }
   // if user login and cookie available, so clear cookie 
-  if(req.cookie["accessToken"]){
+  if(req.cookies["accessToken"]){
     res.clearCookie("accessToken", cookieOptions)
   }
   return res
     .status(200)
     .cookie("successMessage", "Password changed successfully", cookieExpire)
-    .redirect("/login");
+    .redirect("/user/login");
 });
 
 export const findUserName = AsyncHandler(async (req, res) => {
@@ -713,21 +712,21 @@ export const findUserName = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Data not received", cookieExpire)
-      .redirect("/findUserName");
+      .redirect("/user/findUserName");
   }
 
-  const { emailId, fullName } = req.body;
+  const { emailId, fullName, gender} = req.body;
 
   // If any required field is empty
   if (
-    [emailId, fullName].some(
-      (field) => field.toString().trim() === ""
+    [emailId, fullName, gender].some(
+      (field) => field?.toString().trim() === ""
     )
   ) {
     return res
       .status(400)
       .cookie("errorMessage", "DataError : Field is required", cookieExpire)
-      .redirect("/findUserName");
+      .redirect("/user/findUserName");
   }
 
   let searchUser;
@@ -739,27 +738,35 @@ export const findUserName = AsyncHandler(async (req, res) => {
       .status(500)
       .cookie(
         "errorMessage",
-        error.message || "DBError : Unable to find user",
+        `${error.code} : ${error.message}` || "DBError : Unable to find user",
         cookieExpire
       )
-      .redirect("/findUserName");
+      .redirect("/user/findUserName");
   }
   if(!searchUser){
     return res
       .status(404)
       .cookie("errorMessage", "UserError : User Not found", cookieExpire)
-      .redirect("/findUserName");
+      .redirect("/user/findUserName");
   }
 
   if (!(searchUser.fullName === fullName)) {
     return res
       .status(400)
       .cookie("errorMessage", "UserError : Incorrect User data", cookieExpire)
-      .redirect("/findUserName");
+      .redirect("/user/findUserName");
   }
-
+  if (!(searchUser.gender === gender)) {
+    return res
+      .status(400)
+      .cookie("errorMessage", "UserError : Incorrect User data", cookieExpire)
+      .redirect("/user/findUserName");
+  }
+  if(req.cookies["accessToken"]){
+    res.clearCookie("accessToken", cookieOptions)
+  }
   return res
     .status(200)
     .cookie("successMessage", `User Found : UserName : ${searchUser.userName}`, cookieExpire)
-    .redirect("/login");
+    .redirect("/user/login");
 });

@@ -1,0 +1,37 @@
+<%# 
+ -> create a form for register user
+ -> store data and send in post request
+%>
+<%# userName, emailId, fullName, password, gender %>
+<%- include("../baseFiles/header.ejs") %>
+
+<%- include("../baseFiles/messages.ejs") %>
+
+<form action="/api/users/register" method="post" class="m-3 p-3">
+<div class="mb-3">
+  <label for="email" class="form-label">Email Id</label>
+  <input type="email" class="form-control" id="email" placeholder="Enter Email Id" name="emailId" required/>
+</div>
+<div class="mb-3">
+  <label for="userName" class="form-label">UserName</label>
+  <input type="text" class="form-control" id="userName" placeholder="Enter Unique UserName" name="userName" required/>
+</div>
+<div class="mb-3">
+  <label for="fullName" class="form-label">FullName</label>  
+  <input type="text" class="form-control" id="fullName" placeholder="Enter Full Name" name="fullName" required/>
+</div>
+<div class="mb-3">
+  <label for="password" class="form-label">Password</label>
+  <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password" required/>
+</div>
+<div class="mb-3">
+  <label for="gender" class="form-label">Gender</label>
+  <select name="gender" id="gender" required>
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+    <option value="transgender">Transgender</option>
+  </select>
+</div>
+<button type="submit">submit</button>
+</form>
+<%- include("../baseFiles/footer.ejs") %>

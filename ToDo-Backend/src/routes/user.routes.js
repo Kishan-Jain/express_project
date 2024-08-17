@@ -21,9 +21,9 @@ userRouter.route("/register").get(ifAlReadyLogin, registerUserPage)
 userRouter.route("/login").get(ifAlReadyLogin, loginUserPage)
 userRouter.route("/updatedUser").get(isLogin, updateUserPage)
 userRouter.route("/changeUserPassword").get(isLogin, changePasswordPage)
-userRouter.route("/resetUserPassword").get(resetPasswordPage)
-userRouter.route("/findUserName").get(findUserNamePage)
+userRouter.route("/resetUserPassword").get(ifAlReadyLogin, resetPasswordPage)
+userRouter.route("/findUserName").get(ifAlReadyLogin, findUserNamePage)
 
-userRouter.route("/userProfile").get(userProfilePage)
+userRouter.route("/profile").get(isLogin, userProfilePage)
 
 export default userRouter

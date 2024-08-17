@@ -3,5 +3,5 @@ export const cookieOptions = {
   secure : true
 }
 export const cookieExpire = {
-  expire : 60*1000
+  maxAge : 15*1000
 }

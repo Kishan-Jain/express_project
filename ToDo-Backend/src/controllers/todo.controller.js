@@ -21,16 +21,20 @@ export const addNewTodo = AsyncHandler(async(req, res) => {
     return res
     .clearCookie("accessToken", cookieOptions)
     .cookie("errorMessage", "LoginError : User not login", cookieExpire)
-    .redirect("/login")
+    .redirect("/user/login")
   }
   if(!req.body){
-
+    return res
+    .cookie("errorMessage", "DataError : Todo Data not recieved", cookieExpire)
+    .redirect("/user/profile")
   }
   
   const {todoName, discription, completeDate} = req.body
 
   if([todoName, discription, completeDate].some(field => field?.toString().trim() === "")){
-
+    return res
+    .cookie("errorMessage", "DataError : Todo Data not recieved", cookieExpire)
+    .redirect("/user/profile")
   }
   const newTodoObject = {todoName, discription, completeDate}
 
@@ -43,12 +47,14 @@ export const addNewTodo = AsyncHandler(async(req, res) => {
       }
     )
   } catch (error) {
-    
+    return res
+    .cookie("errorMessage", `DataError : ${error.message || "Todo Data not recieved"}`, cookieExpire)
+    .redirect("/user/profile")
   }
   return res
   .status(200)
   .cookie("successMessage", "Todo added successfull", cookieExpire)
-  .redirect("/profile")
+  .redirect("/user/profile")
 })
 
 export const updateTodo = AsyncHandler(async (req, res) => {
@@ -66,7 +72,7 @@ export const updateTodo = AsyncHandler(async (req, res) => {
       .status(409)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "LoginError: User not logged in", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   // Todo ID Validation
@@ -74,7 +80,7 @@ export const updateTodo = AsyncHandler(async (req, res) => {
     return res
       .status(404)
       .cookie("errorMessage", "DataError: TodoId not received", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // Data Validation
@@ -94,14 +100,14 @@ export const updateTodo = AsyncHandler(async (req, res) => {
     return res
       .status(500)
       .cookie("errorMessage", error.message || "DBError: Unable to find User", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
   if (!searchUser) {
     return res
       .status(409)
       .clearCookie("accessToken", cookieOptions)
       .cookie("errorMessage", "UserError: User not found", cookieExpire)
-      .redirect("/login");
+      .redirect("/user/login");
   }
 
   let myTodo;
@@ -111,13 +117,13 @@ export const updateTodo = AsyncHandler(async (req, res) => {
     return res
       .status(500)
       .cookie("errorMessage", error.message || "DataError: Unable to find todo", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
   if (!myTodo) {
     return res
       .status(400)
       .cookie("errorMessage", "UserError: Todo not found", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // Todo Update
@@ -129,14 +135,14 @@ export const updateTodo = AsyncHandler(async (req, res) => {
     return res
       .status(500)
       .cookie("errorMessage", error.message || "DBError: Unable to update Todo", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   }
 
   // Success Response
   return res
     .status(200)
     .cookie("successMessage", "Todo updated successfully", cookieExpire)
-    .redirect("/profile");
+    .redirect("/user/profile");
 });
 
 
@@ -155,7 +161,7 @@ export const markToComplete = AsyncHandler(async(req, res) => {
         .status(409)
         .clearCookie("accessToken", cookieOptions)
         .cookie("errorMessage", "LoginError: User not logged in", cookieExpire)
-        .redirect("/login");
+        .redirect("/user/login");
     }
   
     // Todo ID Validation
@@ -163,7 +169,7 @@ export const markToComplete = AsyncHandler(async(req, res) => {
       return res
         .status(404)
         .cookie("errorMessage", "DataError: TodoId not received", cookieExpire)
-        .redirect("/profile");
+        .redirect("/user/profile");
     }
   
     // User and Todo Lookup
@@ -174,14 +180,14 @@ export const markToComplete = AsyncHandler(async(req, res) => {
       return res
         .status(500)
         .cookie("errorMessage", error.message || "DBError: Unable to find User", cookieExpire)
-        .redirect("/profile");
+        .redirect("/user/profile");
     }
     if (!searchUser) {
       return res
         .status(409)
         .clearCookie("accessToken", cookieOptions)
         .cookie("errorMessage", "UserError: User not found", cookieExpire)
-        .redirect("/login");
+        .redirect("/user/login");
     }
   
     let myTodo;
@@ -191,13 +197,13 @@ export const markToComplete = AsyncHandler(async(req, res) => {
       return res
         .status(500)
         .cookie("errorMessage", error.message || "DataError: Unable to find todo", cookieExpire)
-        .redirect("/profile");
+        .redirect("/user/profile");
     }
     if (!myTodo) {
       return res
         .status(400)
         .cookie("errorMessage", "UserError: Todo not found", cookieExpire)
-        .redirect("/profile");
+        .redirect("/user/profile");
     }
   
     // Todo Update
@@ -209,14 +215,14 @@ export const markToComplete = AsyncHandler(async(req, res) => {
       return res
         .status(500)
         .cookie("errorMessage", error.message || "DBError: Unable to update Todo", cookieExpire)
-        .redirect("/profile");
+        .redirect("/user/profile");
     }
   
     // Success Response
     return res
       .status(200)
       .cookie("successMessage", "Todo Completed marked", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   
 })
 
@@ -233,7 +239,7 @@ export const removeTodo = AsyncHandler(async(req, res) => {
         .status(409)
         .clearCookie("accessToken", cookieOptions)
         .cookie("errorMessage", "LoginError: User not logged in", cookieExpire)
-        .redirect("/login");
+        .redirect("/user/login");
     }
   
     // Todo ID Validation
@@ -241,7 +247,7 @@ export const removeTodo = AsyncHandler(async(req, res) => {
       return res
         .status(404)
         .cookie("errorMessage", "DataError: TodoId not received", cookieExpire)
-        .redirect("/profile");
+        .redirect("/user/profile");
     }
 
     // User and Todo Lookup
@@ -252,14 +258,14 @@ export const removeTodo = AsyncHandler(async(req, res) => {
       return res
         .status(500)
         .cookie("errorMessage", error.message || "DBError: Unable to find User", cookieExpire)
-        .redirect("/profile");
+        .redirect("/user/profile");
     }
     if (!searchUser) {
       return res
         .status(409)
         .clearCookie("accessToken", cookieOptions)
         .cookie("errorMessage", "UserError: User not found", cookieExpire)
-        .redirect("/login");
+        .redirect("/user/login");
     }
   
     let newTodoList;
@@ -269,13 +275,13 @@ export const removeTodo = AsyncHandler(async(req, res) => {
       return res
         .status(500)
         .cookie("errorMessage", error.message || "DataError: Unable to find todos", cookieExpire)
-        .redirect("/profile");
+        .redirect("/user/profile");
     }
     if (!newTodoList) {
       return res
         .status(400)
         .cookie("errorMessage", "UserError: no any Todo found", cookieExpire)
-        .redirect("/profile");
+        .redirect("/user/profile");
     }
   
     // return todoList without given Todo
@@ -286,13 +292,13 @@ export const removeTodo = AsyncHandler(async(req, res) => {
       return res
         .status(500)
         .cookie("errorMessage", error.message || "DBError: Unable to remove Todo", cookieExpire)
-        .redirect("/profile");
+        .redirect("/user/profile");
     }
   
     // Success Response
     return res
       .status(200)
       .cookie("successMessage", "Todo remove successfully", cookieExpire)
-      .redirect("/profile");
+      .redirect("/user/profile");
   
 })

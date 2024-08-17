@@ -5,10 +5,10 @@ import { addNewTodo, markToComplete, removeTodo, updateTodo } from "../controlle
 
 const todoUtilsRouter = Router()
 
-todoUtilsRouter.route("addNewTodo").post(isLogin, addNewTodo)
-todoUtilsRouter.route("updateTodo/:todoId").post(isLogin, updateTodo)
-todoUtilsRouter.route("markToComplete/:todoId").post(isLogin, markToComplete)
-todoUtilsRouter.route("removeTodo/:todoId").post(isLogin, removeTodo)
+todoUtilsRouter.route("/addNewTodo").post(isLogin, addNewTodo)
+todoUtilsRouter.route("/updateTodo/:todoId").post(isLogin, updateTodo)
+todoUtilsRouter.route("/markToComplete/:todoId").post(isLogin, markToComplete)
+todoUtilsRouter.route("/removeTodo/:todoId").post(isLogin, removeTodo)
 
 
 

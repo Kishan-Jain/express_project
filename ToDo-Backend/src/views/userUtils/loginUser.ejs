@@ -1,5 +1,16 @@
-<%- include("./baseFiles/header.ejs") %>
+<%- include("../baseFiles/header.ejs") %>
+<%- include("../baseFiles/messages.ejs") %>
 
-
-
-<%- include("./baseFiles/footer.ejs") %>
+ <form action="/api/users/login" method="post" class="m-3 p-3">
+  <div class="mb-3">
+    <label for="userName" class="form-label">UserName</label>
+    <input type="text" class="form-control" id="userName" placeholder="Enter UserName" name="userName" required/>
+  </div>
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password" required/>
+  </div>
+  <button type="submit">submit</button>
+  </form>
+ 
+<%- include("../baseFiles/footer.ejs") %>

@@ -9,11 +9,11 @@ import jwt from "jsonwebtoken"
 export const ifAlReadyLogin = async(req, res, next) => {
   // check 1: accessToken cookie received : redirect to profile
   // if accessToken not received -> means : user not login, directlly pass to next controller
-  if(req.cookie["accessToken"]){
+  if(req.cookies?.accessToken){
     return res
     .status(409)
     .cookie("warningMessage", "User Already login", cookieExpire)
-    .redirect("/profile")
+    .redirect("/user/profile")
   }
   next()
 }
@@ -26,24 +26,32 @@ export const isLogin = async(req, res, next) => {
    * step 2 : decode by jwt
    * step 3 : retern userId in request
    */
-  if(!req.cookie["accessToken"]){
+  if(!req.cookies?.accessToken){
     return res
     .status(409)
-    .cookie("ErrorMessage", "LoginError : User not login", cookieExpire)
-    .redirect("/login")
+    .redirect("/user/login")
   }
 
-  const accessToken = req.cookie["accessToken"]
+  const accessToken = req.cookies?.accessToken
   
   let decodeToken  
   try {
-    decodeToken = await jwt.decode(accessToken, {complete : true})
+    decodeToken = await jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
   } catch (error) {
     return res
     .status(409)
     .clearCookie("accessToken", cookieOptions)
+    .cookie("errorMessage",
+       `ServerError : ${error.message}  || Token decodation error`, 
+       cookieExpire)
+    .redirect("/user/login")
+  }
+  if(!decodeToken){
+    return res
+    .status(409)
+    .clearCookie("accessToken", cookieOptions)
     .cookie("errorMessage", "ServerError : Token decodation failed ", cookieExpire)
-    .redirect("/login")
+    .redirect("/user/login")
   }
   req.userId = decodeToken._id
   return next()

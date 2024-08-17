@@ -1,0 +1,21 @@
+<%- include("../baseFiles/header.ejs") %>
+<%- include("../baseFiles/messages.ejs") %>
+<div class="m-3 w-full">
+  userName : <%= userData.userName %>
+</div>
+<form action="/api/users/logout/<%= userData._id %>" method="post"><button type="submit">logout</button></form>
+<a href="/user/updatedUser">update user details</a>
+
+<% let todoList = userData.todoList %>
+
+
+<% todoList.forEach(todo => { %>
+  <div>
+    Todo Name : <%= todo.todoName %><br />
+    Description : <%= todo.description %><hr />
+  </div>
+<% }) %>
+<form action="/api/todos/addNewTodo" method="post">
+  <button type="submit">Add New Todo</button>
+</form>
+<%- include("../baseFiles/footer.ejs") %>
