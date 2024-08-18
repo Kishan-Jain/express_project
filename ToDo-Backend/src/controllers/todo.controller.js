@@ -29,14 +29,14 @@ export const addNewTodo = AsyncHandler(async(req, res) => {
     .redirect("/user/profile")
   }
   
-  const {todoName, discription, completeDate} = req.body
+  const {todoName, description, completeDate} = req.body
 
-  if([todoName, discription, completeDate].some(field => field?.toString().trim() === "")){
+  if([todoName, description, completeDate].some(field => field?.toString().trim() === "")){
     return res
     .cookie("errorMessage", "DataError : Todo Data not recieved", cookieExpire)
     .redirect("/user/profile")
   }
-  const newTodoObject = {todoName, discription, completeDate}
+  const newTodoObject = {todoName, description, completeDate}
 
   try {
     await User.findByIdAndUpdate(req.userId,
@@ -84,8 +84,8 @@ export const updateTodo = AsyncHandler(async (req, res) => {
   }
 
   // Data Validation
-  const { todoName, description, completeDate } = req.body;
-  if ([todoName, description, completeDate].some((field) => !field?.trim())) {
+  const { todoName, description, completeDate, isComplete } = req.body;
+  if ([todoName, description, completeDate, isComplete].some((field) => !field?.toString().trim())) {
     return res
       .status(400)
       .cookie("errorMessage", "DataError: All fields are required", cookieExpire)
@@ -112,7 +112,7 @@ export const updateTodo = AsyncHandler(async (req, res) => {
 
   let myTodo;
   try {
-    myTodo = searchUser.todoList.find((todo) => todo._id === req.params?.todoId);
+    myTodo = searchUser.todoList.find((todo) => todo._id?.toString() === req.params?.todoId);
   } catch (error) {
     return res
       .status(500)
@@ -128,7 +128,7 @@ export const updateTodo = AsyncHandler(async (req, res) => {
 
   // Todo Update
   try {
-    const updateMyTodo = { todoName, description, completeDate };
+    const updateMyTodo = { todoName, description, completeDate, isComplete};
     Object.assign(myTodo, updateMyTodo); // Update fields
     await searchUser.save({ validateBeforeSave: false });
   } catch (error) {
@@ -144,8 +144,6 @@ export const updateTodo = AsyncHandler(async (req, res) => {
     .cookie("successMessage", "Todo updated successfully", cookieExpire)
     .redirect("/user/profile");
 });
-
-
 
 export const markToComplete = AsyncHandler(async(req, res) => {
   /**
@@ -192,7 +190,7 @@ export const markToComplete = AsyncHandler(async(req, res) => {
   
     let myTodo;
     try {
-      myTodo = searchUser.todoList.find((todo) => todo._id === req.params?.todoId);
+      myTodo = searchUser.todoList.find((todo) => (todo._id)?.toString().replace("new ObjectId('", "").replace("'", "") === req.params?.todoId);
     } catch (error) {
       return res
         .status(500)
@@ -267,10 +265,27 @@ export const removeTodo = AsyncHandler(async(req, res) => {
         .cookie("errorMessage", "UserError: User not found", cookieExpire)
         .redirect("/user/login");
     }
+
+    let findTodo;
+    try {
+      findTodo = searchUser.todoList?.filter(todo => req.params?.todoId === (todo._id)?.toString().replace("new ObjectId('", "").replace("'", ""))
+    } catch (error) {
+      return res
+        .status(500)
+        .cookie("errorMessage", error.message || "DBError: Unable to find Todo", cookieExpire)
+        .redirect("/user/profile");
+    }
+    if (!findTodo) {
+      return res
+        .status(409)
+        .clearCookie("accessToken", cookieOptions)
+        .cookie("errorMessage", "UserError: todo not found", cookieExpire)
+        .redirect("/user/login");
+    }
   
     let newTodoList;
     try {
-      newTodoList = searchUser.todoList.filter((todo) => todo._id !== req.params?.todoId);
+      newTodoList = searchUser.todoList.filter(todo => req.params?.todoId !== (todo._id)?.toString().replace("new ObjectId('", "").replace("'", ""));
     } catch (error) {
       return res
         .status(500)

@@ -12,7 +12,6 @@ export const ifAlReadyLogin = async(req, res, next) => {
   if(req.cookies?.accessToken){
     return res
     .status(409)
-    .cookie("warningMessage", "User Already login", cookieExpire)
     .redirect("/user/profile")
   }
   next()
