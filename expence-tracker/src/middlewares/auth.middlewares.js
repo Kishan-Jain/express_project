@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import {cookieExpire, cookieOptions} from "../constants.js"
 
-export const ifAllReadyLogin = async function (req, res, next){
+export const ifAlReadyLogin = async function (req, res, next){
   if(req.cookies["accessToken"]){
     return res
     .status(400)

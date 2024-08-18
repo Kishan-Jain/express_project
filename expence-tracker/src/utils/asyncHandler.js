@@ -1,4 +1,4 @@
-const asyncandler = async fn => {
+const AsyncHandler = async fn => {
   return (req, res, next) =>{
     Promise.resolve(
       fn(req, res, next)
@@ -7,4 +7,4 @@ const asyncandler = async fn => {
   }
 }
 
-export default asyncandler
+export default AsyncHandler
