@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon -r dotenv/config src/index.js"
+    "test": "nodemon -r dotenv/config src/index",
+    "start": "node -r dotenv/config src/index"
   },
   "type": "module",
   "keywords": [

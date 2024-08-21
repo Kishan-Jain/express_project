@@ -89,20 +89,23 @@
                       </div>
                     </td>
                     <td>
-                      <form action="" method="get" class="d-inline"><button class="btn" type="button"><a
-                            href="/user/<%= userData._id %>/<%= todo?._id %>"><i
-                              class="fas fa-edit text-success"></i></a></button> </form>
-                      <form action="/api/todos/deleteTodo/<%= todo?._id %>" method="post" class="d-inline"><button
-                          class="btn" type="button"><a href=""><i class="fas fa-trash text-danger"></i></a></button>
+                      <form action="" method="get" class="d-inline">
+                        <button class="btn" type="button">
+                          <a href="/user/<%= userData._id %>/<%= todo?._id %>"><i class="fas fa-edit text-success"></i>
+                          </a>
+                        </button>
+                      </form>
+                      <form action="/api/todos/removeTodo/<%= todo?._id %>" method="post" class="d-inline"><button
+                          class="btn" type="submit"><a href=""><i class="fas fa-trash text-danger"></i></a></button>
                       </form>
                       <% if (todo?.isComplete) { %>
                         <form action="/api/todos/markToUnComplete/<%= todo?._id %>" method="post" class="d-inline">
                           <button class="btn" type="submit"><a href="" class="text-decoration-none">
-                            <i class="fw-bold fs-5" >X</i>
+                              <i class="fw-bold fs-5">X</i>
                         </form>
                         <% } else { %>
                           <form action="/api/todos/markToComplete/<%= todo?._id %>" method="post" class="d-inline">
-                            <button class="btn" type="submit"><a href="" ><i class="fa fa-check"></i></a></button>
+                            <button class="btn" type="submit"><a href=""><i class="fa fa-check"></i></a></button>
                           </form>
 
                           <% } %>

@@ -40,9 +40,9 @@
         </div>
         <div class="mb-3">
           <label class="pe-3" for="isComplete" class="form-label">Complete status</label>
-            <input type="radio" <%= todo.isComplete === true ? "checked" : "" %> id="true" name="isComplete" value="true"/>
+            <input type="radio" <%= todo?.isComplete === true ? "checked" : "" %> id="true" name="isComplete" value="true"/>
             <label for="true" >True</label>
-            <input type="radio" <%= todo.isComplete === false ? "checked" : "" %> id="false" name="isComplete" value="false"/>
+            <input type="radio" <%= todo?.isComplete === false ? "checked" : "" %> id="false" name="isComplete" value="false"/>
             <label for="false">False</label>
         </div>
         <button class="btn btn-success" type="submit">Update Todo</button>
