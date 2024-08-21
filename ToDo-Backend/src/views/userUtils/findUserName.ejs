@@ -1,29 +1,47 @@
-<%- include("../baseFiles/header.ejs") %>
-<%- include("../baseFiles/messages.ejs") %>
+<%- include("../baseFiles/header.ejs") %> <%- include("../baseFiles/navbar.ejs")
+%> <%- include("../baseFiles/messages.ejs") %>
 
+<div class="row w-100">
+  <div class="col-8 row m-auto mt-3">
+    <div class="col-9 p-3 rounded-4 mt-3 row m-auto bg-white">
+      <h1>Find UserName page</h1>
+      <form action="/api/users/findUserName" method="post">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Id</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="Enter Email Id"
+            name="emailId"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="fullName" class="form-label">FullName</label>
+          <input
+            type="text"
+            class="form-control"
+            id="fullName"
+            placeholder="Enter Full Name"
+            name="fullName"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label class="pe-3" for="gender" class="form-label">Gender</label>
+          <input type="radio" id="male" name="gender" value="male"/>
+          <label for="male">Male</label>
+          <input type="radio" id="female" name="gender" value="female"/>
+          <label for="female">Female</label>
+          <input type="radio" id="third_gender" name="gender" value="third_gender"/>
+          <label for="third_gender">Third Gender</label>
+        </div>
 
-<h1>Password reset page</h1>
-<form action="/api/users/findUserName" method="post">
-  <div class="mb-3">
-    <label for="email" class="form-label">Email Id</label>
-    <input type="email" class="form-control" id="email" placeholder="Enter Email Id" name="emailId"  required/>
+        <button class="btn btn-primary" type="submit">submit</button>
+      </form>
+    </div>
   </div>
-  <div class="mb-3">
-    <label for="fullName" class="form-label">FullName</label>  
-    <input type="text" class="form-control" id="fullName" placeholder="Enter Full Name" name="fullName" required/>
-  </div>
-  <div class="mb-3">
-    <label for="gender" class="form-label">Gender</label>
-    <select name="gender" id="gender" required>
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-      <option value="transgender">Transgender</option>
-    </select>
-  </div>
-  
-  <button type="submit">submit</button>
-</form>
-
-
+</div>
 
 <%- include("../baseFiles/footer.ejs") %>

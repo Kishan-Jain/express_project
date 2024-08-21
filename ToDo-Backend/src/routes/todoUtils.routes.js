@@ -1,13 +1,14 @@
 import { Router } from "express";
 import { isLogin } from "../middlewares/auth.middleware.js";
-import { addNewTodo, markToComplete, removeTodo, updateTodo } from "../controllers/todo.controller.js";
+import { addNewTodo, markToComplete, markToUnComplete, removeTodo, updateTodo } from "../controllers/todo.controller.js";
 
 
 const todoUtilsRouter = Router()
 
 todoUtilsRouter.route("/addNewTodo").post(isLogin, addNewTodo)
-todoUtilsRouter.route("/updatedTodo/:todoId").post(isLogin, updateTodo)
+todoUtilsRouter.route("/updateTodo/:todoId").post(isLogin, updateTodo)
 todoUtilsRouter.route("/markToComplete/:todoId").post(isLogin, markToComplete)
+todoUtilsRouter.route("/markToUnComplete/:todoId").post(isLogin, markToUnComplete)
 todoUtilsRouter.route("/removeTodo/:todoId").post(isLogin, removeTodo)
 
 

@@ -1,0 +1,82 @@
+<header class="p-3 border-bottom bg-mySet-blue">
+  <div class="container">
+    <div class="row w-100">
+      <div class="col-9 d-flex flex-wrap mx-auto  justify-content-center justify-content-lg-start">
+        <a href="/user/profile" class="d-flex align-items-center text-decoration-none">
+          <h1> Todo List </h1>
+        </a>
+      </div>
+      <div class="col-3 m-auto">
+
+        <% if (!userData) { %>
+
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button class="btn btn-primary" type="button">
+              <a href="/user/register" class="text-decoration-none text-dark fw-bold p-2">Register</a>
+            </button>
+            <button class="btn btn-warning" type="button">
+              <a href="/user/login" class="text-decoration-none text-dark fw-bold p-2">Login</a>
+            </button>
+          </div>
+          <% } else { %>
+            <a href="/user/UserDetails" class="text-decoration-none fw-semibold text-dark">
+              <%= userData.fullName %>
+            </a> |
+            <a href="/user/updatedUser" class="text-decoration-none fw-bold ">
+              Update UserDetails</a><br />
+            <a href="/user/changeUserPassword" class="text-decoration-none fw-bold ms-5">
+              Change UserPassword</a>
+            <div class="btn-group " role="group" aria-label="Basic example">
+              <form action="/api/users/logout/<%= userData._id %>" method="post" class="d-inline"><button
+                  class=" bg-warning border-0 my-1 py-1 px-2 rounded-start" type="submit">Logout</button></form>
+
+              <button class=" bg-danger my-1 py-1 px-2 border-0 rounded-end" type="submit" data-bs-toggle="modal"
+                data-bs-target="#deleteUser">Delete User</button>
+
+            </div>
+            <!--Delete user conforming Modal -->
+    <div class="modal fade m-3" id="deleteUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content m-3">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel"> Conformation to
+              Delete user</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form action="/api/users/deleteUser/<%= userData._id %>" method="post" class="m-4">
+            <div class="mb-1">
+              <label for="email" class="form-label">Email Id : </label>
+              <strong for="email">
+                <%= userData.emailId %>
+              </strong>
+            </div>
+            <div class="mb-1">
+              <label for="userName" class="form-label">UserName : </label>
+              <strong>
+                <%= userData.userName %>
+              </strong>
+            </div>
+            <div class="mb-3">
+              <label for="fullName" class="form-label">FullName</label>
+              <strong>
+                <%= userData.fullName %>
+              </strong>
+            </div>
+
+            <button class=" btn btn-danger" type="submit"> Delete User</button>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+            <% } %>
+      </div>
+    </div>
+
+    
+  </div>
+
+  </div>
+
+</header>

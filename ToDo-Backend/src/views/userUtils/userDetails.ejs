@@ -1,13 +1,10 @@
-<%# -> create a form for register user -> store data and send in post request %>
-<%# userName, emailId, fullName, password, gender %> <%-
-include("../baseFiles/header.ejs") %> <%- include("../baseFiles/navbar.ejs") %>
-<%- include("../baseFiles/messages.ejs") %>
+<%- include("../baseFiles/header.ejs") %> <%- include("../baseFiles/navbar.ejs")
+%> <%- include("../baseFiles/messages.ejs") %>
 
 <div class="row w-100">
   <div class="col-10 row m-auto mt-3">
     <div class="col-9 p-3 rounded-4 mt-3 row m-auto bg-white">
-      <h1>Register User page</h1>
-      <form action="/api/users/register" method="post" class="m-3 p-3">
+      <form action="/api/users/updateUser/<%= userData._id %>" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Email Id</label>
           <input
@@ -16,6 +13,8 @@ include("../baseFiles/header.ejs") %> <%- include("../baseFiles/navbar.ejs") %>
             id="email"
             placeholder="Enter Email Id"
             name="emailId"
+            value="<%= userData.emailId %>"
+            disabled
             required
           />
         </div>
@@ -27,6 +26,8 @@ include("../baseFiles/header.ejs") %> <%- include("../baseFiles/navbar.ejs") %>
             id="userName"
             placeholder="Enter Unique UserName"
             name="userName"
+            value="<%= userData.userName %>"
+            disabled
             required
           />
         </div>
@@ -38,38 +39,20 @@ include("../baseFiles/header.ejs") %> <%- include("../baseFiles/navbar.ejs") %>
             id="fullName"
             placeholder="Enter Full Name"
             name="fullName"
+            value="<%= userData.fullName %>"
             required
-          />
-        </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            placeholder="Enter Password"
-            name="password"
-            required
+            disabled
           />
         </div>
         <div class="mb-3">
           <label class="pe-3" for="gender" class="form-label">Gender</label>
-            <input type="radio" id="male" name="gender" value="male"/>
-            <label for="male">Male</label>
-            <input type="radio" id="female" name="gender" value="female"/>
+            <input type="radio" <%= userData.gender === "male" ? "checked" : "" %> id="male" name="gender" value="male" disabled/>
+            <label for="male" >Male</label>
+            <input type="radio" <%= userData.gender === "female" ? "checked" : "" %> id="female" name="gender" value="female" disabled/>
             <label for="female">Female</label>
-            <input type="radio" id="third_gender" name="gender" value="third_gender"/>
+            <input type="radio" <%= userData.gender === "third_gender" ? "checked" : "" %> id="third_gender" name="gender" value="third_gender" disabled/>
             <label for="third_gender">Third Gender</label>
         </div>
-        <button class="btn btn-primary ms-3" type="submit">submit</button>
-        <strong class="ms-3 "
-          >Find UserName,
-          <a
-            href="/user/findUserName"
-            class="text-decoration-none color-mySet-blue"
-            >click to find</a
-          ></strong
-        >
       </form>
     </div>
   </div>

@@ -1,0 +1,54 @@
+<%- include("../baseFiles/header.ejs") %> 
+<%- include("../baseFiles/navbar.ejs")
+%> <%- include("../baseFiles/messages.ejs") %>
+
+<div class="row w-100">
+  <div class="col-10 row m-auto mt-3">
+    <div class="col-9 p-3 rounded-4 mt-3 row m-auto bg-white">
+      <form action="/api/todos/updateTodo/<%= todo?._id %>" method="post">
+        <div class="mb-3">
+          <label for="todoName" class="form-label">Todo Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="todoName"
+            name="todoName"
+            value="<%= todo?.todoName %>"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            type="text"
+            class="form-control"
+            id="description"
+            name="description"
+            required
+          ><%= todo?.description  %></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="completeDate" class="form-label">FullName</label>
+          <input
+            type="date"
+            class="form-control"
+            id="completeDate"
+            name="completeDate"
+            value="<%= todo?.completeDate?.toLocaleDateString() %>"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label class="pe-3" for="isComplete" class="form-label">Complete status</label>
+            <input type="radio" <%= todo.isComplete === true ? "checked" : "" %> id="true" name="isComplete" value="true"/>
+            <label for="true" >True</label>
+            <input type="radio" <%= todo.isComplete === false ? "checked" : "" %> id="false" name="isComplete" value="false"/>
+            <label for="false">False</label>
+        </div>
+        <button class="btn btn-success" type="submit">Update Todo</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include("../baseFiles/footer.ejs") %>

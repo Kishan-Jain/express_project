@@ -2,6 +2,7 @@
  * add new todo
  * update todo
  * chack mark complete
+ * chack Unmark complete
  * delete topo
  */
 import AsyncHandler from "../utils/asyncHandler.js"
@@ -220,6 +221,85 @@ export const markToComplete = AsyncHandler(async(req, res) => {
     return res
       .status(200)
       .cookie("successMessage", "Todo Completed marked", cookieExpire)
+      .redirect("/user/profile");
+  
+})
+
+export const markToUnComplete = AsyncHandler(async(req, res) => {
+  /**
+   * check user login -> receive userId
+   * find todo by given todoId in params
+   * change todo status
+   * redirect to profile
+   */
+
+    // User Authentication
+    if (!req.userId) {
+      return res
+        .status(409)
+        .clearCookie("accessToken", cookieOptions)
+        .cookie("errorMessage", "LoginError: User not logged in", cookieExpire)
+        .redirect("/user/login");
+    }
+  
+    // Todo ID Validation
+    if (!req.params?.todoId) {
+      return res
+        .status(404)
+        .cookie("errorMessage", "DataError: TodoId not received", cookieExpire)
+        .redirect("/user/profile");
+    }
+  
+    // User and Todo Lookup
+    let searchUser;
+    try {
+      searchUser = await User.findById(req.userId).select("-password");
+    } catch (error) {
+      return res
+        .status(500)
+        .cookie("errorMessage", error.message || "DBError: Unable to find User", cookieExpire)
+        .redirect("/user/profile");
+    }
+    if (!searchUser) {
+      return res
+        .status(409)
+        .clearCookie("accessToken", cookieOptions)
+        .cookie("errorMessage", "UserError: User not found", cookieExpire)
+        .redirect("/user/login");
+    }
+  
+    let myTodo;
+    try {
+      myTodo = searchUser.todoList.find((todo) => (todo._id)?.toString())
+    } catch (error) {
+      return res
+        .status(500)
+        .cookie("errorMessage", error.message || "DataError: Unable to find todo", cookieExpire)
+        .redirect("/user/profile");
+    }
+    if (!myTodo) {
+      return res
+        .status(400)
+        .cookie("errorMessage", "UserError: Todo not found", cookieExpire)
+        .redirect("/user/profile");
+    }
+  
+    // Todo Update
+    try {
+      const updateMyTodo = { isComplete : false };
+      Object.assign(myTodo, updateMyTodo); // Update fields
+      await searchUser.save({ validateBeforeSave: false });
+    } catch (error) {
+      return res
+        .status(500)
+        .cookie("errorMessage", error.message || "DBError: Unable to update Todo", cookieExpire)
+        .redirect("/user/profile");
+    }
+  
+    // Success Response
+    return res
+      .status(200)
+      .cookie("successMessage", "Todo UnCompleted marked", cookieExpire)
       .redirect("/user/profile");
   
 })

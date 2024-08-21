@@ -1,16 +1,71 @@
 <%- include("../baseFiles/header.ejs") %>
-<%- include("../baseFiles/messages.ejs") %>
 
- <form action="/api/users/login" method="post" class="m-3 p-3">
-  <div class="mb-3">
-    <label for="userName" class="form-label">UserName</label>
-    <input type="text" class="form-control" id="userName" placeholder="Enter UserName" name="userName" required/>
+<h1 class="m-auto text-center py-3 bg-mySet-blue">To-Do List</h1>
+
+<%- include("../baseFiles/messages.ejs") %>
+<div class="row w-100">
+  <div class="col-6 row m-auto mt-3">
+    <div class="col-9 rounded-4 mt-3 row m-auto bg-white">
+      <h2 class="pt-4 text-center col-8 m-auto">Login User</h2>
+      <form
+        action="/api/users/login"
+        method="post"
+        class="m-3 p-3 col-8 m-auto"
+      >
+        <div class="mb-3">
+          <label for="userName" class="form-label">UserName</label>
+          <input
+            type="text"
+            class="form-control"
+            id="userName"
+            placeholder="Enter UserName"
+            name="userName"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="Enter Password"
+            name="password"
+            required
+          />
+          <small
+            >Forget password,
+            <span class="text-primary"
+              ><a href="/user/resetUserPassword" class="text-decoration-none"
+                >click to reset</a
+              ></span
+            ></small
+          >
+        </div>
+        <button type="submit" class="btn btn-success ml-2">
+          <span class="fw-bold mx-1">Login</span></button
+        ><br />
+        <strong
+          >If not Register,
+          <a href="/user/register" class="text-decoration-none color-mySet-blue"
+            >Register here</a
+          ></strong
+        ><br />
+        <strong
+          >Find UserName,
+          <a
+            href="/user/findUserName"
+            class="text-decoration-none color-mySet-blue"
+            >click to find</a
+          ></strong
+        >
+      </form>
+    </div>
   </div>
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password" required/>
+  <div class="col-6 row m-auto mt-3">
+    <div class="col-9 rounded-4 mt-3 row m-auto bg-white">
+      <h2 class="pt-4 text-center col-8 m-auto">About Project</h2>
+    </div>
   </div>
-  <button type="submit">submit</button>
-  </form>
- 
+</div>
 <%- include("../baseFiles/footer.ejs") %>

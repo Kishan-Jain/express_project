@@ -1,29 +1,61 @@
-<%- include("../baseFiles/header.ejs") %>
-<%- include("../baseFiles/messages.ejs") %>
+<%- include("../baseFiles/header.ejs") %> <%- include("../baseFiles/navbar.ejs")
+%> <%- include("../baseFiles/messages.ejs") %>
 
-<form action="/api/users/updateUser/<%= userData._id %>" method="post">
-  <div class="mb-3">
-    <label for="email" class="form-label">Email Id</label>
-    <input type="email" class="form-control" id="email" placeholder="Enter Email Id" name="emailId" value="<%= userData.emailId %>" disabled required/>
+<div class="row w-100">
+  <div class="col-10 row m-auto mt-3">
+    <div class="col-9 p-3 rounded-4 mt-3 row m-auto bg-white">
+      <form action="/api/users/updateUser/<%= userData._id %>" method="post">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Id</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="Enter Email Id"
+            name="emailId"
+            value="<%= userData.emailId %>"
+            disabled
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="userName" class="form-label">UserName</label>
+          <input
+            type="text"
+            class="form-control"
+            id="userName"
+            placeholder="Enter Unique UserName"
+            name="userName"
+            value="<%= userData.userName %>"
+            disabled
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="fullName" class="form-label">FullName</label>
+          <input
+            type="text"
+            class="form-control"
+            id="fullName"
+            placeholder="Enter Full Name"
+            name="fullName"
+            value="<%= userData.fullName %>"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label class="pe-3" for="gender" class="form-label">Gender</label>
+            <input type="radio" <%= userData.gender === "male" ? "checked" : "" %> id="male" name="gender" value="male"/>
+            <label for="male" >Male</label>
+            <input type="radio" <%= userData.gender === "female" ? "checked" : "" %> id="female" name="gender" value="female"/>
+            <label for="female">Female</label>
+            <input type="radio" <%= userData.gender === "third_gender" ? "checked" : "" %> id="third_gender" name="gender" value="third_gender"/>
+            <label for="third_gender">Third Gender</label>
+        </div>
+        <button class="btn btn-success" type="submit">Updated UserDetails</button>
+      </form>
+    </div>
   </div>
-  <div class="mb-3">
-    <label for="userName" class="form-label">UserName</label>
-    <input type="text" class="form-control" id="userName" placeholder="Enter Unique UserName" name="userName" value="<%= userData.userName %>" disabled required/>
-  </div>
-  <div class="mb-3">
-    <label for="fullName" class="form-label">FullName</label>  
-    <input type="text" class="form-control" id="fullName" placeholder="Enter Full Name" name="fullName" value="<%= userData.fullName %>" required/>
-  </div>
-  <div class="mb-3">
-    <label for="gender" class="form-label">Gender</label>
-    <select name="gender" id="gender" required>
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-      <option value="transgender">Transgender</option>
-    </select>
-  </div>
-  <button type="submit">submit</button>
-</form>
-
+</div>
 
 <%- include("../baseFiles/footer.ejs") %>

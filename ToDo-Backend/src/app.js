@@ -11,6 +11,9 @@ app.use(cookie())
 app.set("view engine", "ejs")
 app.set("views", "./src/views")
 
+app.get("/", (req, res) => {
+  res.redirect("/user/login")
+})
 
 // All routes
 import userRouter from "./routes/user.routes.js"
