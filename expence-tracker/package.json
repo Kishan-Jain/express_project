@@ -4,7 +4,7 @@
   "description": "project for track and manten expence ",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon -r dotenv/config index"
+    "test": "nodemon -r dotenv/config src/index.js"
   },
   "keywords": [
     "express",

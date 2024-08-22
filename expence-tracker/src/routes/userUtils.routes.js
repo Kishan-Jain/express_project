@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {ifAlReadyLogin, isLogin} from "../middlewares/auth.middlewares.js"
-import { changeUserPassword, deleteUser, loginUser, logoutUser, registerUser, resetUserPassword, updateUserDetails } from "../controllers/user.controllers";
+import { changeUserPassword, deleteUser, loginUser, logoutUser, registerUser, resetUserPassword, updateUserDetails } from "../controllers/user.controllers.js";
 
 const userRouter = Router()
 

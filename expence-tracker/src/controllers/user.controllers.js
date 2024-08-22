@@ -299,7 +299,7 @@ export const logoutUser = AsyncHandler(async (req, res) => {
     .redirect("/user/login");
 });
 
-export const updatedUser = AsyncHandler(async (req, res) => {
+export const updateUserDetails = AsyncHandler(async (req, res) => {
   // Verify if the user is logged in.
   // Ensure that the userId from the cookie matches the one from the request parameters.
   // Validate received data.
@@ -508,7 +508,7 @@ export const deleteUser = AsyncHandler(async (req, res) => {
     .redirect("/user/login");
 });
 
-export const changePassword = AsyncHandler(async (req, res) => {
+export const changeUserPassword = AsyncHandler(async (req, res) => {
   // Verify if the user is logged in.
   // Ensure that the userId from the cookie matches the one from the request parameters.
   // Validate received data.
@@ -607,7 +607,7 @@ export const changePassword = AsyncHandler(async (req, res) => {
     .redirect("/user/login");
 });
 
-export const resetPassword = AsyncHandler(async (req, res) => {
+export const resetUserPassword = AsyncHandler(async (req, res) => {
   // Validate received data.
   // Retrieve the user by  .
   // Match the data to the user.

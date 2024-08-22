@@ -1,12 +1,19 @@
 import { Router } from "express";
 import {ifAlReadyLogin, isLogin} from "../middlewares/auth.middlewares.js"
-import { changeUserPasswordPage, loginUserPage, registerUserPage, resetUserPasswordPage, updateUserPage } from "../controllers/views.controllers";
+import { addNewExpence, changeUserPasswordPage, loginUserPage, registerUserPage, resetUserPasswordPage, updateExpence, updateUserPage, userDetails, userProfile, viewPerticulerExpence } from "../controllers/views.controllers.js";
 const viewRouter = Router()
 
 viewRouter.route("/register").get(ifAlReadyLogin, registerUserPage)
 viewRouter.route("/login").get(ifAlReadyLogin, loginUserPage)
-viewRouter.route("/updateUserDetails/:userId").get(isLogin, updateUserPage)
-viewRouter.route("/changeUserPassword/:userId").get(isLogin, changeUserPasswordPage)
+viewRouter.route("/userProfile/updateUser/:userId").get(isLogin, updateUserPage)
+viewRouter.route("/userProfile/changeUserPassword/:userId").get(isLogin, changeUserPasswordPage)
 viewRouter.route("/resetUserPassword").get(isLogin, resetUserPasswordPage)
+
+viewRouter.route("/userProfile").get(isLogin, userProfile)
+viewRouter.route("/userProfile/userDetails/:userId").get(isLogin, userDetails)
+
+viewRouter.route("/userProfile/addNewExpence").get(isLogin, addNewExpence)
+viewRouter.route("/userProfile/updateExpence/:expenceId").get(isLogin, updateExpence)
+viewRouter.route("/userProfile/expence/:expenceId").get(isLogin, viewPerticulerExpence)
 
 export default viewRouter
