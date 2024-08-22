@@ -1,13 +1,13 @@
 
-<% if (errorMessages) { %>
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <%= errorMessages %>
+<% if (errorMessage) { %>
+  <div class="alert alert-danger container alert-dismissible fade show" role="alert">
+    <%= errorMessage %>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
  
- <% } else if (successMessages) { %>
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <%= successMessages %>
+ <% } else if (successMessage) { %>
+  <div class="alert alert-success alert-dismissible fade show container" role="alert">
+    <%= successMessage %>
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
  <% } %>

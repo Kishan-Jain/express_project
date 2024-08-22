@@ -8,9 +8,9 @@ dotenv.config({
 })
 
 // declare variable
-const port = process.env.port
-const DB_Uri = process.env.DATABASE_URI
-const DB_Name = process.env.DATABASE_NAME
+const port = process.env.PORT
+const DB_Uri = process.env.DB_URI
+const DB_Name = process.env.DB_NAME
 
 
 connectDb(DB_Uri, DB_Name)

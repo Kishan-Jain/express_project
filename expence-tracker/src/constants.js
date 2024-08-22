@@ -4,5 +4,5 @@ export const cookieExpire = {
 export const cookieOptions = {
   httpOnly : true,
   sequre : true,
-  maxAge : 10*1000
+  maxAge : 24*60*60*1000
 }
