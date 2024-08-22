@@ -59,7 +59,7 @@ const userSchema = new Schema({
     required: true,
   },
   address: addressSchema, // Embed address schema
-  expences: [expenceSchema], // Array of expense documents
+  expenceList: [expenceSchema], // Array of expense documents
 }, { timestamps: true });
 
 // Pre-save hook: Hash the user's password before saving

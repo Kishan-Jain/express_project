@@ -9,7 +9,7 @@
  */
 
 import { cookieExpire, cookieOptions } from "../constants.js";
-import User from "../models/user.models.js";
+import UserModel from "../models/user.models.js";
 import AsyncHandler from "../utils/asyncHandler.js";
 import { IsSpaceUsed } from "../utils/customElements.js";
 
@@ -29,16 +29,28 @@ export const registerUser = AsyncHandler(async (req, res) => {
       .redirect("/user/profile");
   }
 
-  // Validate received data.
+  // check data received from body.
   if (!req.body) {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Data not received", cookieExpire)
       .redirect("/user/register");
   }
+  // extract data field
   const { emailId, fullName, password, cityName, stateName, pincode } = req.body;
 
   // Ensure that all fields are provided.
+
+  if (
+    ![emailId, fullName, password, cityName, stateName, pincode].some(
+      (field) => field)
+  ) {
+    return res
+      .status(404)
+      .cookie("errorMessage", "DataError : All fields are required", cookieExpire)
+      .redirect("/user/register");
+  }
+  // check all fields not empty
   if (
     [emailId, fullName, password, cityName, stateName, pincode].some(
       (field) => field?.toString().trim() === ""
@@ -46,12 +58,13 @@ export const registerUser = AsyncHandler(async (req, res) => {
   ) {
     return res
       .status(404)
-      .cookie("errorMessage", "DataError : All fields are required", cookieExpire)
+      .cookie("errorMessage", "DataError : Any field not Empty", cookieExpire)
       .redirect("/user/register");
   }
 
+
   // check if fields are invalid
-  if ([emailId].some((field) => IsSpaceUsed(field))) {
+  if ([emailId, password].some((field) => IsSpaceUsed(field))) {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Invalid fields", cookieExpire)
@@ -59,7 +72,7 @@ export const registerUser = AsyncHandler(async (req, res) => {
   }
 
   // Check if the email is already taken.
-  if (await User.findOne({ emailId })) {
+  if (await UserModel.findOne({ emailId })) {
     return res
       .status(409)
       .cookie("errorMessage", "UserError : Email already exists", cookieExpire)
@@ -74,7 +87,7 @@ export const registerUser = AsyncHandler(async (req, res) => {
   let newUser;
   try {
     // Create a new user and save their information.
-    newUser = new User({ emailId, fullName, password, address: newUserAddress });
+    newUser = new UserModel({ emailId, fullName, password, address: newUserAddress });
     await newUser.save({ validateBeforeSave: true });
   } catch (error) {
     return res
@@ -97,7 +110,7 @@ export const registerUser = AsyncHandler(async (req, res) => {
   let searchNewUser;
   try {
     // Retrieve the newly created user from the database.
-    searchNewUser = await User.findById(newUser?._id).select("-password");
+    searchNewUser = await UserModel.findById(newUser?._id).select("-password");
   } catch (error) {
     return res
       .status(500)
@@ -133,7 +146,7 @@ export const loginUser = AsyncHandler(async (req, res) => {
   // Set the access token in a cookie and redirect to the user's profile page with a welcome message.
 
   // Check if the user is already logged in.
-  if (req.cookie?.accessToken) {
+  if (req.cookies?.accessToken) {
     return res
       .status(409)
       .cookie("errorMessage", "LoginError : User already logged in", cookieExpire)
@@ -152,15 +165,19 @@ export const loginUser = AsyncHandler(async (req, res) => {
   const { emailId, password } = req.body;
 
   // Ensure that all fields are provided.
+  if(![emailId, password].some(field => field)){
+
+  }
+  // Ensure that all fiels are not empty
   if ([emailId, password].some((field) => field?.toString().trim() === "")) {
     return res
       .status(404)
-      .cookie("errorMessage", "DataError : All fields are required", cookieExpire)
-      .redirect("/user/register");
+      .cookie("errorMessage", "DataError : No Any field is Empty", cookieExpire)
+      .redirect("/user/login");
   }
 
   // Check if the email is valid.
-  if (IsSpaceUsed(emailId)) {
+  if (IsSpaceUsed(emailId, password)) {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Invalid field", cookieExpire)
@@ -170,13 +187,13 @@ export const loginUser = AsyncHandler(async (req, res) => {
   // Find the user by  .
   let searchUser;
   try {
-    searchUser = await User.findOne({ emailId });
+    searchUser = await UserModel.findOne({ emailId });
   } catch (error) {
     return res
       .status(500)
       .cookie(
         "errorMessage",
-        `${error.code} : ${`${error.code} : ${error.message}`}` || "DBError : Unable to find user",
+        `"DBError : ${ error.message ||  "Unable to find user"}`,
         cookieExpire
       )
       .redirect("/user/login");
@@ -255,7 +272,7 @@ export const logoutUser = AsyncHandler(async (req, res) => {
   // Find the user by ID.
   let searchUser;
   try {
-    searchUser = await User.findById(req.params?.userId).select("-password");
+    searchUser = await UserModel.findById(req.params?.userId).select("-password");
   } catch (error) {
     return res
       .status(500)
@@ -331,7 +348,7 @@ export const updatedUser = AsyncHandler(async (req, res) => {
   // Find the user by ID.
   let searchUser;
   try {
-    searchUser = await User.findById(req.params?.userId).select("-password");
+    searchUser = await UserModel.findById(req.params?.userId).select("-password");
   } catch (error) {
     return res
       .status(500)
@@ -360,7 +377,7 @@ export const updatedUser = AsyncHandler(async (req, res) => {
   // Update user details.
   let updatedUser;
   try {
-    updatedUser = await User.findByIdAndUpdate(
+    updatedUser = await UserModel.findByIdAndUpdate(
       searchUser._id,
       {
         $set: {
@@ -449,7 +466,7 @@ export const deleteUser = AsyncHandler(async (req, res) => {
   // Find the user by ID.
   let searchUser;
   try {
-    searchUser = await User.findById(req.params?.userId).select("-password");
+    searchUser = await UserModel.findById(req.params?.userId).select("-password");
   } catch (error) {
     return res
       .status(500)
@@ -471,7 +488,7 @@ export const deleteUser = AsyncHandler(async (req, res) => {
 
   // Delete the user.
   try {
-    await User.findByIdAndDelete(searchUser._id);
+    await UserModel.findByIdAndDelete(searchUser._id);
   } catch (error) {
     return res
       .status(400)
@@ -541,7 +558,7 @@ export const changePassword = AsyncHandler(async (req, res) => {
   // Find the user by ID.
   let searchUser;
   try {
-    searchUser = await User.findById(req.params?.userId);
+    searchUser = await UserModel.findById(req.params?.userId);
   } catch (error) {
     return res
       .status(500)
@@ -622,7 +639,7 @@ export const resetPassword = AsyncHandler(async (req, res) => {
   let searchUser;
   try {
     // Find the user by  emailId and exclude the password field
-    searchUser = await User.findOne({ emailId }).select("-password");
+    searchUser = await UserModel.findOne({ emailId }).select("-password");
   } catch (error) {
     return res
       .status(500)
