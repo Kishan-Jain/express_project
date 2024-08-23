@@ -538,11 +538,27 @@ export const changeUserPassword = AsyncHandler(async (req, res) => {
 
   // Validate that required fields are not empty.
   if (
+    ![newPassword, oldPassword].some((field) => field)
+  ) {
+    return res
+      .status(404)
+      .cookie("errorMessage", "DataError : All field is required", cookieExpire)
+      .redirect("/user/userProfile");
+  }
+  if (
     [newPassword, oldPassword].some((field) => field?.toString().trim() === "")
   ) {
     return res
       .status(404)
       .cookie("errorMessage", "DataError : Password not received", cookieExpire)
+      .redirect("/user/userProfile");
+  }
+  if (
+    [newPassword, oldPassword].some((field) => IsSpaceUsed(field))
+  ) {
+    return res
+      .status(404)
+      .cookie("errorMessage", "DataError : invalid field", cookieExpire)
       .redirect("/user/userProfile");
   }
 
@@ -624,7 +640,17 @@ export const resetUserPassword = AsyncHandler(async (req, res) => {
 
   const { emailId, fullName, cityName, stateName, pincode, newPassword } = req.body;
 
-  // If any required field is empty
+  // Ensure all field is required and any field not empty
+  if (
+    ![emailId, fullName, cityName, stateName, pincode, newPassword].some(
+      (field) => field)
+  ) {
+    return res
+      .status(400)
+      .cookie("errorMessage", "DataError : All field is required", cookieExpire)
+      .redirect("/user/resetUserPassword");
+  }
+
   if (
     [emailId, fullName, cityName, stateName, pincode, newPassword].some(
       (field) => field.toString().trim() === ""
@@ -632,14 +658,23 @@ export const resetUserPassword = AsyncHandler(async (req, res) => {
   ) {
     return res
       .status(400)
-      .cookie("errorMessage", "DataError : Data not received", cookieExpire)
+      .cookie("errorMessage", "DataError : Any field not empty", cookieExpire)
+      .redirect("/user/resetUserPassword");
+  }
+  if (
+    [emailId, newPassword].some(
+      (field) => IsSpaceUsed(field))
+  ) {
+    return res
+      .status(400)
+      .cookie("errorMessage", "DataError : Received invalid field", cookieExpire)
       .redirect("/user/resetUserPassword");
   }
 
   let searchUser;
   try {
-    // Find the user by  emailId and exclude the password field
-    searchUser = await UserModel.findOne({ emailId }).select("-password");
+    // Find the user by  emailId 
+    searchUser = await UserModel.findOne({ emailId });
   } catch (error) {
     return res
       .status(500)
@@ -660,18 +695,26 @@ export const resetUserPassword = AsyncHandler(async (req, res) => {
       .redirect("/user/resetUserPassword");
   }
 
-  // address object
-  const addressObject = {
-    cityName, stateName, pincode
-  }
-
-  if (!(searchUser?.address === addressObject)) {
+  if (!(searchUser?.fullName === fullName)) {
     return res
       .status(400)
-      .cookie("errorMessage", "UserError : Incorrect User data", cookieExpire)
+      .cookie("errorMessage", "UserError : Incorrect User fullname", cookieExpire)
       .redirect("/user/resetUserPassword");
   }
 
+  if (!(searchUser?.address?.cityName === cityName && searchUser?.address?.stateName === stateName && searchUser?.address?.pincode === Number(pincode ))) {
+    return res
+      .status(400)
+      .cookie("errorMessage", "UserError : Incorrect User Address", cookieExpire)
+      .redirect("/user/resetUserPassword");
+  }
+  // check old and new password are same
+  if(await searchUser.isPasswordCorrect(newPassword)){
+    return res
+      .status(404)
+      .cookie("errorMessage", "DBError : new password not same of old password", cookieExpire)
+      .redirect("/user/resetUserPassword");
+  }
   try {
     // Update the user's password and save
     searchUser.password = newPassword;

@@ -1,5 +1,5 @@
 export const cookieExpire = {
-  maxAge : 10*1000
+  maxAge : 1000
 }
 export const cookieOptions = {
   httpOnly : true,

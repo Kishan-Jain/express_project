@@ -13,12 +13,10 @@ const DB_Uri = process.env.DB_URI
 const DB_Name = process.env.DB_NAME
 
 
-connectDb(DB_Uri, DB_Name)
-.then(
+connectDb(DB_Uri, DB_Name).then(
   app.listen(port, ()=>{
     console.log(`http://localhost:${port}`)
   })
-)
-.catch(
+).catch(
   console.log("DB-Server connection failed")
 )

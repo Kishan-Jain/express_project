@@ -1,6 +1,51 @@
-<%- include("./partials/header.ejs") %>
-<%- include("./partials/navbar.ejs") %>
-<%- include("./partials/message.ejs") %>
+<%- include("../partials/header.ejs") %>
+<%- include("../partials/navbar.ejs") %>
+<%- include("../partials/message.ejs") %>
 
+<form method="post" action="/backend/expence/updateExpence/<%= userData?._id %>/<%= expenceData?._id %>">
+  <div class="mb-2">
+    <label for="title">Title</label>
+    <input 
+    type="text" 
+    value="<%= expenceData?.title %>"
+    class="form-control"
+    id="title"
+    name="title"
+    >
+  </div>
+  <div class="mb-2">
+    <label for="type">Type</label>
+    <input 
+    type="text" 
+    value="<%= expenceData?.type %>"
+    class="form-control"
+    id="type"
+    name="type"
+    >
+  </div>
+  <div class="mb-2">
+    <label for="description">Description</label>
+    <input 
+    type="text" 
+    value="<%= expenceData?.description %>"
+    class="form-control"
+    id="description"
+    name="description"
+    
+    >
+  </div>
+  <div class="mb-2">
+    <label for="amount">Amount</label>
+    <input 
+    type="number" 
+    value="<%= expenceData?.amount %>"
+    class="form-control"
+    id="amount"
+    name="amount"
 
-<%- include("./partials/footer.ejs") %>
+    >
+  </div>
+  <input type="submit" value="Update Expence">
+</form>
+
+<%- include("../partials/footer.ejs") %>

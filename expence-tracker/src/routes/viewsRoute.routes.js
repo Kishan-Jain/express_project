@@ -5,9 +5,9 @@ const viewRouter = Router()
 
 viewRouter.route("/register").get(ifAlReadyLogin, registerUserPage)
 viewRouter.route("/login").get(ifAlReadyLogin, loginUserPage)
+viewRouter.route("/resetUserPassword").get(ifAlReadyLogin, resetUserPasswordPage)
 viewRouter.route("/userProfile/updateUser/:userId").get(isLogin, updateUserPage)
 viewRouter.route("/userProfile/changeUserPassword/:userId").get(isLogin, changeUserPasswordPage)
-viewRouter.route("/resetUserPassword").get(isLogin, resetUserPasswordPage)
 
 viewRouter.route("/userProfile").get(isLogin, userProfile)
 viewRouter.route("/userProfile/userDetails/:userId").get(isLogin, userDetails)

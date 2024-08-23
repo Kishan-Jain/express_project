@@ -5,7 +5,7 @@ import { addNewExpence, removeExpence, updateExpence } from "../controllers/expe
 const expenceRouter = Router()
 
 expenceRouter.route("/addNewExpence").post(isLogin, addNewExpence)
-expenceRouter.route("/updateExprence/:expenceId").post(isLogin, updateExpence)
-expenceRouter.route("/removeExpence/:expenceId").post(isLogin, removeExpence)
+expenceRouter.route("/updateExpence/:userId/:expenceId").post(isLogin, updateExpence)
+expenceRouter.route("/removeExpence/:userId/:expenceId").post(isLogin, removeExpence)
 
 export default expenceRouter

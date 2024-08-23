@@ -180,7 +180,7 @@ export const updateExpence = AsyncHandler(async(req, res) => {
     return res
       .status(500)
       .clearCookie("accessToken", cookieOptions)
-      .cookie("errorMessage", `DbError : ${error.message || "All field is required"}`, cookieExpire)
+      .cookie("errorMessage", `DbError : ${error.message || "unable to find user"}`, cookieExpire)
       .redirect(`/user/login`);
   }
   // check user not found
@@ -193,12 +193,12 @@ export const updateExpence = AsyncHandler(async(req, res) => {
   }
 
   // find expence details by expenceId parameter
-  const expenceDetails = searchUser.expenceList.find(expence => expence._id?.toString() === req.params?.expenceId)
+  let expenceDetails = searchUser.expenceList.find(expence => expence._id?.toString() === req.params?.expenceId)
   
   const updateExpence = {title, type, description, amount}
   try {
     // set new data on expence details and save user
-    expenceDeatails = updateExpence
+    Object.assign(expenceDetails, updateExpence)
     await searchUser.save({validateBeforeSave:false})
 
     // return successmessage and redirect to user profile

@@ -5,7 +5,7 @@ export const ifAlReadyLogin = async function (req, res, next){
   if(req.cookies["accessToken"]){
     return res
     .status(400)
-    .redirect("/user/profile")
+    .redirect("/user/userProfile")
   }
   next()
 }

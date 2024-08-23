@@ -1,9 +1,51 @@
 <%- include("../partials/header.ejs") %>
-<%- include("../partials/navbar.ejs") %>
-<%- include("../partials/message.ejs") %>
+  <%- include("../partials/navbar.ejs") %>
+    <%- include("../partials/message.ejs") %>
 
-<form action="/backend/user/logoutUser/<%= userData._id %>" method="post">
-  <button type="submit">logout</button>
-</form>
+      <form action="/backend/user/logoutUser/<%= userData._id %>" method="post">
+        <button type="submit">logout</button>
+      </form>
+      <form action="/user/userProfile/updateUser/<%= userData._id %>" method="get">
+        <button type="submit">updateUser</button>
+      </form>
+      <form action="/user/userProfile/changeUserPassword/<%= userData._id %>" method="get">
+        <button type="submit">changeUserPassword</button>
+      </form>
+      <form action="/user/userProfile/userDetails/<%= userData._id %>" method="get">
+        <button type="submit">User Details</button>
+      </form>
+      <form action="/backend/user/deleteUser/<%= userData._id %>" method="post">
+        <button type="submit">deleteUser</button>
+      </form>
 
-<%- include("../partials/footer.ejs") %>
+      <form action="/user/userProfile/addNewExpence" method="get">
+        <button type="submit">Add New Expence</button>
+      </form>
+      <% if (userData?.expenceList?.length> 0) { %>
+        <% userData.expenceList.map( expence=> {%>
+          <p>
+            <%= expence.title %>
+          </p>
+          <p>
+            <%= expence.description %>
+          </p>
+          <p>
+            <%= expence.type %>
+          </p>
+          <p>
+            <%= expence.amount %>
+          </p>
+          </form>
+          <form action="/user/userProfile/expence/<%= expence._id %>" method="get">
+            <button type="submit">view Expence</button>
+          </form>
+          <form action="/user/userProfile/updateExpence/<%= expence._id %>" method="get">
+            <button type="submit">update Expence</button>
+          </form>
+          <form action="/backend/expence/removeExpence/<%= userData?._id %>/<%= expence?._id %>" method="post">
+            <button type="submit">remove Expence</button>
+          </form>
+          <hr />
+          <%}) %>
+            <% } %>
+              <%- include("../partials/footer.ejs") %>
