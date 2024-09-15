@@ -9,8 +9,8 @@ dotenv.config({
 
 // declare variable
 const port = process.env.PORT
-const DB_Uri = process.env.DB_URI
-const DB_Name = process.env.DB_NAME
+const DB_Uri = (process.env.DB_URI).toString()
+const DB_Name = (process.env.DB_NAME).toString()
 
 
 await connectDb(DB_Uri, DB_Name).then(
