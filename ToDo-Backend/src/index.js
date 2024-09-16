@@ -10,8 +10,8 @@ dotenv.config({
 
 // declare useful variables here
 const port = process.env.PORT
-const Db_URI = "mongodb+srv://KISHAN:kishan1234@kishanjain.zkdcp1z.mongodb.net"
-const Db_Name = (process.env.Db_Name).toString()
+const Db_URI = process.env.Db_Uri
+const Db_Name = process.env.Db_Name
 
 
 try {
